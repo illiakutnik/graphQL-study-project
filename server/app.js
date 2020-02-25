@@ -1,13 +1,16 @@
 const express = require('express')
 const graphqlHTTP = require('express-graphql')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const schema = require('./schema/schema')
 
+const app = express()
+
+app.use(cors())
+
 const db =
 	'mongodb+srv://illiakutnik:bagdad1258@cluster0-ztp3p.mongodb.net/test?retryWrites=true&w=majority'
-
-const app = express()
 
 const connectDB = async () => {
 	try {
