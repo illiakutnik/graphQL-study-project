@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/react-hooks'
-import { getAuthorsQuery } from '../queries/queries'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import {
+	getAuthorsQuery,
+	addBookMutation,
+	getBooksQuery
+} from '../queries/queries'
 
 const AddBook = () => {
 	const [formData, setFormData] = useState({
@@ -9,6 +13,7 @@ const AddBook = () => {
 		author: ''
 	})
 	const { data, loading } = useQuery(getAuthorsQuery)
+	const [addBook] = useMutation(addBookMutation)
 
 	const displayAuthors = () => {
 		if (loading) {
@@ -30,19 +35,37 @@ const AddBook = () => {
 
 	const handleSubmit = e => {
 		e.preventDefault()
-		console.log(formData)
+		addBook({
+			variables: {
+				name: formData.name,
+				genre: formData.genre,
+				authorId: formData.author
+			},
+			refetchQueries: [{ query: getBooksQuery }]
+		})
+		setFormData({ name: '', genre: '', author: '' })
 	}
 
 	return (
 		<form id='add-book' onSubmit={handleSubmit}>
 			<div className='field'>
 				<label>Book name:</label>
-				<input name='name' type='text' onChange={e => handleChange(e)} />
+				<input
+					name='name'
+					type='text'
+					value={formData.name}
+					onChange={e => handleChange(e)}
+				/>
 			</div>
 
 			<div className='field'>
 				<label>Genre:</label>
-				<input name='genre' type='text' onChange={e => handleChange(e)} />
+				<input
+					name='genre'
+					type='text'
+					value={formData.genre}
+					onChange={e => handleChange(e)}
+				/>
 			</div>
 
 			<div className='field'>
